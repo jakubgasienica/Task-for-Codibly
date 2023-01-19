@@ -30,7 +30,6 @@ function Products() {
 		pageNumbers.push(i);
 	}
 
-	// #1976d2
 	return (
 		<div className={css.container}>
 			<Input onChange={e => search(parseInt(e.target.value))}></Input>

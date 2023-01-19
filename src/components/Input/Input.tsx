@@ -1,7 +1,6 @@
-import css from "./Input.module.css";
 import React from "react";
 import TextField from "@mui/material/TextField";
-import { alpha, styled } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 
 type Props = {
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -27,12 +26,6 @@ const CssTextField = styled(TextField)({
 	},
 });
 
-const InputCustom = styled(Input)(({ theme }) => ({
-	"label + &": {
-		marginTop: theme.spacing(3),
-	},
-}));
-
 function Input({ onChange }: Props) {
 	return (
 		<>
@@ -42,16 +35,6 @@ function Input({ onChange }: Props) {
 				onChange={onChange}
 				type='number'
 			/>
-			{/* <TextField
-				id='filled-basic'
-				InputLabelProps={{
-					shrink: true,
-				}}
-				label='Write id of offer'
-				variant='filled'
-				
-				color='secondary'
-				></TextField> */}
 		</>
 	);
 }
