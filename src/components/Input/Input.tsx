@@ -5,6 +5,7 @@ import { styled } from "@mui/material/styles";
 type Props = {
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	className?: string;
+	value?: string;
 };
 const CssTextField = styled(TextField)({
 	"& label.Mui-focused": {
@@ -26,12 +27,13 @@ const CssTextField = styled(TextField)({
 	},
 });
 
-function Input({ onChange }: Props) {
+function Input({ value, onChange }: Props) {
 	return (
 		<>
 			<CssTextField
 				label='Write id of offer'
 				id='filled-basic'
+				value={value}
 				onChange={onChange}
 				type='number'
 			/>
