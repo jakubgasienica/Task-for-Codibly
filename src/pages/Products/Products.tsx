@@ -23,8 +23,8 @@ function Products() {
 		goToNextPage,
 		goToPreviousPage,
 		searchDetails,
-		searchItem,
 		handleSearch,
+		fetchAllProducts,
 	} = useProducts();
 
 	const pageNumbers: number[] = [];
@@ -35,10 +35,7 @@ function Products() {
 	return (
 		<div className={css.container}>
 			<Input onChange={e => handleSearch(parseInt(e.target.value))} />
-			<ButtonCustom
-				onClick={() => searchDetails(searchItem)}
-				textButton='Search'
-			/>
+			<ButtonCustom onClick={() => searchDetails()} textButton='Search' />
 
 			<div>
 				{error && <ErrorFetch type={Error.SelectItem} />}
@@ -56,21 +53,21 @@ function Products() {
 							<TableRowProduct
 								key={selectedProduct.id}
 								product={selectedProduct}
-								handleSearch={searchDetails}
+								handleSearch={() => searchDetails(selectedProduct.id)}
 							/>
 						)) ||
 							products.map(product => (
 								<TableRowProduct
 									key={product.id}
 									product={product}
-									handleSearch={searchDetails}
+									handleSearch={() => searchDetails(product.id)}
 								/>
 							))}
 					</TableBody>
 				</Table>
 			</div>
 			{selectedProduct && (
-				<ButtonCustom onClick={() => searchDetails(0)} textButton={"go back"} />
+				<ButtonCustom onClick={fetchAllProducts} textButton={"go back"} />
 			)}
 			<Box
 				sx={{

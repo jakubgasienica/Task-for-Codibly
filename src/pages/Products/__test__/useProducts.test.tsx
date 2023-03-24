@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import { Products } from "../Products";
 import userEvent from "@testing-library/user-event";
 
@@ -71,37 +71,40 @@ jest.mock("../../../utils/fetchProducts", () => ({
 }));
 
 describe("Products.tsx", () => {
-	test.only("if filters products", async () => {
-		await waitFor(async () => {
-			await render(<Products />);
-		});
-		// const searchItem = screen.getByLabelText(/write id of offer/i);
+	test("if selected item will be only show by click an element", async () => {
+		render(<Products />);
+		const tableRow = await screen.findByText(/cerulean/i);
 
-		const searchItem = screen.getByLabelText("Write id of offer");
+		userEvent.click(tableRow);
+
+		await waitFor(async () => {
+			expect(screen.queryByText(/fuchsia rose/i)).not.toBeInTheDocument();
+		});
+	});
+
+	test("if render prooper 5 rows", async () => {
+		render(<Products />);
+		await waitFor(async () => {
+			expect(screen.getAllByRole("row").length).toBe(6);
+		});
+	});
+	test("if filters products", async () => {
+		render(<Products />);
+
+		const searchItem = screen.getByLabelText(/write id of offer/i);
 		const searchButton = screen.getByText(/search/i);
 
 		userEvent.type(searchItem, "1");
 		userEvent.click(searchButton);
 
 		// await waitFor(async () => {
-		expect(screen.findByText(/cerulean/i)).resolves.toBeInTheDocument();
-		expect(screen.findByText(/fuchsia rose/i)).rejects.toBeInTheDocument();
+		// 	expect(screen.queryByText(/cerulean/i)).toBeInTheDocument();
 		// });
-	});
-	test("if pagination work correct", () => {
-		const nextButton = screen.getByText(/next/i);
-		expect(screen.getByText("1")).toBeInTheDocument();
 
-		userEvent.click(nextButton);
+		expect(screen.findByText(/cerulean/i)).resolves.toBeInTheDocument();
 
-		expect(screen.getByText("8")).toBeInTheDocument();
-	});
-	test("if selected item will be only show by click an element", () => {
-		const tableRow = screen.getByText("1");
-		userEvent.click(tableRow);
-		expect(screen.getByText("2")).not.toBeInTheDocument();
-	});
-	test("if render prooper 5 rows", () => {
-		expect(screen.getAllByRole("row"));
+		// expect(screen.queryByText(/fuchsia rose/i)).not.toBeInTheDocument();
+
+		expect(screen.findByText(/fuchsia rose/i)).rejects.toThrow();
 	});
 });

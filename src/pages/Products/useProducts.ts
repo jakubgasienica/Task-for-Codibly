@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Error } from "../../components/ErrorFetch/ErrorFetch";
 import type {
 	ResponseData,
@@ -46,24 +46,25 @@ function useProducts() {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [searchItem, setSearchItem] = useState(0);
 
-	useEffect(() => {
-		const doFetch = async () => {
-			try {
-				setError(null);
-				const response = await fetchProducts(productsPerPage, currentPage);
+	const fetchAllProducts = useCallback(async () => {
+		try {
+			// setSelectedProduct(null);
+			setError(null);
+			const response = await fetchProducts(productsPerPage, currentPage);
 
-				const json = await response.json();
-				const data: MappedResponseData = mapResponse(json);
-				setProducts(data.products);
-				setTotalPages(data?.totalPages ?? 1);
-				setCurrentPage(data?.page ?? 1);
-			} catch {
-				setError(Error.FetchProducts);
-			}
-		};
-
-		doFetch();
+			const json = await response.json();
+			const data: MappedResponseData = mapResponse(json);
+			setProducts(data.products);
+			setTotalPages(data?.totalPages ?? 1);
+			setCurrentPage(data?.page ?? 1);
+		} catch {
+			setError(Error.FetchProducts);
+		}
 	}, [currentPage]);
+
+	useEffect(() => {
+		fetchAllProducts();
+	}, [fetchAllProducts]);
 
 	function goToNextPage() {
 		setCurrentPage(page => (totalPages === currentPage ? 1 : page + 1));
@@ -77,7 +78,7 @@ function useProducts() {
 		setSearchItem(item);
 	}
 
-	async function searchDetails(id: number) {
+	async function searchDetails(id = searchItem) {
 		try {
 			const response = await fetchDetails(id);
 			const json = await response.json();
@@ -101,6 +102,7 @@ function useProducts() {
 		searchDetails,
 		fetchProducts,
 		handleSearch,
+		fetchAllProducts,
 	};
 }
 
